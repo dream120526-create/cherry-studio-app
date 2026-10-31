@@ -28,7 +28,9 @@ export function renderHeaderToolbarItem(
         disabled={action.disabled}
         icon={action.nativeIcon}
         onPress={action.onPress}
-      />
+      >
+        {action.accessibilityLabel ?? action.key}
+      </Stack.Toolbar.Button>
     );
   }
 
@@ -39,6 +41,7 @@ export function renderHeaderToolbarItem(
         accessibilityLabel={action.accessibilityLabel}
         disabled={action.disabled}
         icon={action.nativeIcon}
+        title={action.accessibilityLabel ?? action.key}
       >
         {renderMenuSections(action.items)}
       </Stack.Toolbar.Menu>
@@ -63,7 +66,7 @@ function renderMenuSections(items: readonly MenuItem[]) {
   });
   if (sections.length === 1) return sections[0]?.map(renderMenuAction);
   return sections.map((section) => (
-    <Stack.Toolbar.Menu key={section[0]?.id} inline>
+    <Stack.Toolbar.Menu key={section[0]?.id} title={section[0]?.group} inline>
       {section.map(renderMenuAction)}
     </Stack.Toolbar.Menu>
   ));
