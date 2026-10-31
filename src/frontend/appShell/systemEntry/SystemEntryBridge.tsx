@@ -56,7 +56,11 @@ export function SystemEntryBridge() {
     deliver,
     isReady: Boolean(navigation?.key && recentAgentId),
     module,
-    onFailure: () => toast.show({ label: t('systemEntry.failed'), variant: 'danger' }),
+    onFailure: () => {
+      // A stale share is routine on launch and on returning from the app switcher; surfacing a
+      // toast every time is noise. Keep it visible in development only.
+      if (__DEV__) toast.show({ label: t('systemEntry.failed'), variant: 'danger' });
+    },
   });
 
   return null;
