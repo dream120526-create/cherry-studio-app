@@ -43,8 +43,12 @@ jobs:
         run: |
           set -o pipefail
           WS=$(ls -d ios/*.xcworkspace | head -1)
-          SCHEME=$(xcodebuild -workspace "$WS" -list -json | jq -r '.workspace.schemes[0]')
+          SCHEME=$(basename "$WS" .xcworkspace)
+          if ! xcodebuild -workspace "$WS" -list -json | jq -r '.workspace.schemes[]' | grep -qx "$SCHEME"; then
+            SCHEME=$(xcodebuild -workspace "$WS" -list -json | jq -r '.workspace.schemes[]' | grep -v '^Pods-' | grep -vi 'backup' | head -1)
+          fi
           echo "workspace=$WS scheme=$SCHEME"
+          xcodebuild -workspace "$WS" -list -json | jq -r '.workspace.schemes[]' | sed 's/^/scheme: /'
           xcodebuild build             -workspace "$WS" -scheme "$SCHEME" -configuration Release             -destination 'generic/platform=iOS' -derivedDataPath build \
             CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY="" DEVELOPMENT_TEAM=""             -skipPackagePluginValidation -skipMacroValidation             2>&1 | tee xcodebuild.log | tail -n 60
           grep -q "\*\* BUILD SUCCEEDED \*\*" xcodebuild.log
@@ -52,7 +56,7 @@ jobs:
       - name: Package ipa
         run: |
           set -euo pipefail
-          APP=$(find build/Build/Products/Release-iphoneos -maxdepth 1 -name "*.app" | head -1)
+          APP=$(find build/Build/Products -maxdepth 2 -name "*.app" -type d | grep -v '/Pods' | head -1)
           echo "app=$APP"
           test -d "$APP"
           rm -rf out && mkdir -p out/Payload
