@@ -1,7 +1,7 @@
 import { Composer, useComposerExpansion } from '@cherrystudio/ui/components';
-import { BlurTargetView } from 'expo-blur';
+import { BlurTargetView, BlurView } from 'expo-blur';
 import { type ComponentType, type PropsWithChildren, type RefObject, useRef } from 'react';
-import { Platform, View, type ViewInstance } from 'react-native';
+import { Platform, StyleSheet, View, type ViewInstance } from 'react-native';
 import Animated, { Extrapolation, interpolate, useAnimatedStyle } from 'react-native-reanimated';
 
 import { ReadingContentFrame } from '@/frontend/appShell/layout';
@@ -11,6 +11,16 @@ import {
   useFullScreenLayerProgress,
   useIsFullScreenLayerPresented,
 } from './FullScreenLayer';
+
+const styles = StyleSheet.create({
+  topGlass: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    height: 64,
+  },
+});
 
 /** By this point of a layer's growth, an in-app header has faded out under it. */
 const HEADER_FADE_END = 0.5;
@@ -53,6 +63,14 @@ function ChatScreenContent({
       <BlurTargetView ref={blurTarget} style={{ flex: 1 }}>
         <View className="flex-1 bg-chat-background">
           <ReadingContentFrame>{children}</ReadingContentFrame>
+          {Platform.OS === 'ios' ? (
+            <BlurView
+              intensity={32}
+              pointerEvents="none"
+              style={styles.topGlass}
+              tint="default"
+            />
+          ) : null}
         </View>
       </BlurTargetView>
       {Platform.OS === 'android' ? (
