@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "Cherry Studio",
+    "name": "Ripple",
     "slug": "cherry-studio",
     "version": "0.5.1",
     "locales": {
@@ -121,7 +121,7 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "monochromeImage": "./assets/adaptive-icon-monochrome.png",
-        "backgroundColor": "#F65D5D"
+        "backgroundColor": "#0B1020"
       },
       "package": "com.cherryai.cherrystudio_app",
       "predictiveBackGestureEnabled": false,
