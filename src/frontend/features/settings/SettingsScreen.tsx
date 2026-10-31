@@ -9,27 +9,21 @@ import Settings2Icon from '@cherrystudio/app-icons/icons/settings-2';
 import ShieldIcon from '@cherrystudio/app-icons/icons/shield';
 import { Section } from '@cherrystudio/ui/components';
 import { useRouter } from 'expo-router';
-import { useCallback, useMemo } from 'react';
+import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Platform, ScrollView, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { RouteHeader } from '@/frontend/appShell/header';
-import { usePreference } from '@/frontend/data/hooks';
 
-import { ProfileHero } from './components/ProfileHero';
 import { useProviderListNavigation } from './provider';
 
 export default function SettingsScreen() {
   const { t } = useTranslation();
   const router = useRouter();
   const insets = useSafeAreaInsets();
-  const [userName] = usePreference('app.user.name');
   const { openProviderList, prepareProviderList } = useProviderListNavigation();
 
-  const openProfileSettings = useCallback(() => {
-    router.push('/settings/profile');
-  }, [router]);
   const contentContainerStyle = useMemo(() => ({ paddingBottom: insets.bottom }), [insets.bottom]);
 
   return (
@@ -41,7 +35,6 @@ export default function SettingsScreen() {
         contentInsetAdjustmentBehavior="automatic"
         showsVerticalScrollIndicator={false}
       >
-        <ProfileHero onPress={openProfileSettings} userName={userName} />
         <View className="gap-6 px-4 pt-2">
           <Section>
             <Section.Item
