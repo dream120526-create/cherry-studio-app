@@ -57,7 +57,7 @@ module.exports = (config) => {
       }
       writePlist(path.join(directory, 'Info.plist'), {
         CFBundleDevelopmentRegion: 'en',
-        CFBundleDisplayName: 'Cherry Studio',
+        CFBundleDisplayName: 'Ripple',
         CFBundleExecutable: '$(EXECUTABLE_NAME)',
         CFBundleIdentifier: '$(PRODUCT_BUNDLE_IDENTIFIER)',
         CFBundleInfoDictionaryVersion: '6.0',
