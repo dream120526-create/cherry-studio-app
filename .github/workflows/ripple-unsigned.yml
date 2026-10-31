@@ -15,6 +15,8 @@ jobs:
       PROFILE: production
       EXPO_NO_TELEMETRY: "1"
       CI: "1"
+      SENTRY_DISABLE_AUTO_UPLOAD: "true"
+      SENTRY_ALLOW_FAILURE: "true"
     steps:
       - uses: actions/checkout@v4
 
@@ -26,11 +28,25 @@ jobs:
         with:
           version: 12.2.1
 
+      - name: Cache pnpm store
+        uses: actions/cache@v4
+        with:
+          path: ~/.local/share/pnpm/store
+          key: pnpm-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
+
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
       - name: Expo prebuild (ios)
         run: npx expo prebuild --platform ios --no-install --clean
+
+      - name: Cache CocoaPods
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/Library/Caches/CocoaPods
+            ~/.cocoapods/repos
+          key: pods-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
 
       - name: CocoaPods
         working-directory: ios
@@ -49,7 +65,7 @@ jobs:
           fi
           echo "workspace=$WS scheme=$SCHEME"
           xcodebuild -workspace "$WS" -list -json | jq -r '.workspace.schemes[]' | sed 's/^/scheme: /'
-          xcodebuild build             -workspace "$WS" -scheme "$SCHEME" -configuration Release             -destination 'generic/platform=iOS' -derivedDataPath build \
+          xcodebuild build             -workspace "$WS" -scheme "$SCHEME" -configuration Release             -destination 'generic/platform=iOS' ARCHS=arm64 ONLY_ACTIVE_ARCH=NO -derivedDataPath build \
             CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY="" DEVELOPMENT_TEAM=""             -skipPackagePluginValidation -skipMacroValidation             2>&1 | tee xcodebuild.log | tail -n 60
           grep -q "\*\* BUILD SUCCEEDED \*\*" xcodebuild.log
 
