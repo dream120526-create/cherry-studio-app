@@ -76,6 +76,23 @@ export default function SettingsScreen() {
           </Section>
           <Section>
             <Section.Item
+              label={t('settings.items.skills', '技能')}
+              leading={<PackageIcon className="size-4 text-foreground" />}
+              onPress={() => router.push('/skills')}
+            />
+            <Section.Item
+              label={t('settings.items.plugins', '插件')}
+              leading={<Settings2Icon className="size-4 text-foreground" />}
+              onPress={() => router.push('/plugins')}
+            />
+            <Section.Item
+              label={t('settings.items.agents', 'Agent 管理')}
+              leading={<ShieldIcon className="size-4 text-foreground" />}
+              onPress={() => router.push('/agents')}
+            />
+          </Section>
+          <Section>
+            <Section.Item
               label={t('settings.data.title')}
               leading={<DatabaseIcon className="size-4 text-foreground" />}
               onPress={() => router.push('/settings/data')}
